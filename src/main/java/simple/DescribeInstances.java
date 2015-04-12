@@ -4,8 +4,6 @@ import provider.SoftLayerClientProvider;
 
 import com.softlayer.api.ApiClient;
 import com.softlayer.api.service.Account;
-import com.softlayer.api.service.Hardware;
-import com.softlayer.api.service.virtual.Guest;
 
 public class DescribeInstances {
 
@@ -14,47 +12,55 @@ public class DescribeInstances {
 		ApiClient client = SoftLayerClientProvider.createApiClient();
 		Account.Service accountService = Account.service(client);
 
-		System.out.println("------ VIRTUAL ------");
+		System.out.println("[ID][Domain][Status]");
 
-		// VirtualMachine
-		for (Guest guest : accountService.getVirtualGuests()) {
-			// ID
-			System.out.println(guest.getId());
-			// ホスト名
-			System.out.println(guest.getHostname());
-			// ホスト名
-			System.out.println(guest.getFullyQualifiedDomainName());
-			Guest.Service service = guest.asService(client);
-			// 停止
-			// service.powerOffSoft();
-			// 起動
-			// service.powerOn();
-			// ステータス(起動中：Running/停止：Halted)
-			System.out.println(service.getPowerState().getName());
-		}
+		// インスタンスの情報をまとめて表示します。
+		accountService
+				.getVirtualGuests()
+				.stream()
+				.map(s -> "[" + s.getId() + "][" + s.getDomain() + "]["
+						+ s.asService(client).getPowerState().getName() + "]")
+				.forEach(System.out::println);
 
-		System.out.println("------ BAREMETAL ------");
+		// インスタンスの情報を指定して表示します。
+		accountService
+				.getVirtualGuests()
+				.stream()
+				.filter(s -> s.getId() == 8501951L)
+				.map(s -> "[" + s.getId() + "][" + s.getDomain() + "]["
+						+ s.asService(client).getPowerState().getName() + "]")
+				.forEach(System.out::println);
 
-		accountService.withMask().hardware().id();
-		accountService.withMask().hardware().hostname();
-		accountService.withMask().hardware().fullyQualifiedDomainName();
+		// 起動
+		accountService.getVirtualGuests().stream()
+				.filter(s -> s.getId() == 8501951L)
+				.forEach(s -> s.asService(client).powerOn());
+
+		// 停止
+		accountService.getVirtualGuests().stream()
+				.filter(s -> s.getId() == 8501951L)
+				.forEach(s -> s.asService(client).powerOffSoft());
+
+		// accountService.withMask().hardware().id();
+		// accountService.withMask().hardware().hostname();
+		// accountService.withMask().hardware().fullyQualifiedDomainName();
 
 		// BareMetal
-		for (Hardware hardware : accountService.getObject().getHardware()) {
-			// ID
-			System.out.println(hardware.getId());
-			// ホスト名
-			System.out.println(hardware.getHostname());
-			// ホスト名
-			System.out.println(hardware.getFullyQualifiedDomainName());
-			Hardware.Service service = hardware.asService(client);
-			// 停止
-			// service.powerOff();
-			// 起動
-			// service.powerOn();
-			// ステータス(on/off)
-			System.out.println(service.getServerPowerState());
-		}
+		// for (Hardware hardware : accountService.getObject().getHardware()) {
+		// // ID
+		// System.out.println(hardware.getId());
+		// // ホスト名
+		// System.out.println(hardware.getHostname());
+		// // ホスト名
+		// System.out.println(hardware.getFullyQualifiedDomainName());
+		// Hardware.Service service = hardware.asService(client);
+		// // 停止
+		// // service.powerOff();
+		// // 起動
+		// // service.powerOn();
+		// // ステータス(on/off)
+		// System.out.println(service.getServerPowerState());
+		// }
 
 	}
 }
