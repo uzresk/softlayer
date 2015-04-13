@@ -21,7 +21,6 @@ public class PowerOnOffVirtualInstance {
 
 		Long id = new Long(args[0]);
 
-		// インスタンスの�?報を指定して表示します�??
 		Stream<Guest> stream = accountService.getVirtualGuests().stream()
 				.filter(s -> id.equals(s.getId()));
 		Guest guest = stream.findFirst().get();
@@ -30,7 +29,6 @@ public class PowerOnOffVirtualInstance {
 
 		System.out.println("id[" + id + "] Status[" + powerStatus + "]");
 
-		// 起動中なら停止、停止中なら起動する�??
 		if ("Running".equals(powerStatus)) {
 			guest.asService(client).powerOffSoft();
 
@@ -38,7 +36,6 @@ public class PowerOnOffVirtualInstance {
 			guest.asService(client).powerOn();
 		}
 
-		// ス�?ータスを�?�表示
 		accountService
 				.getVirtualGuests()
 				.stream()
@@ -46,32 +43,6 @@ public class PowerOnOffVirtualInstance {
 				.map(s -> "id[" + id + "] Status["
 						+ s.asService(client).getPowerState().getName() + "]")
 				.forEach(System.out::println);
-
-		// 起�?
-		// accountService.getVirtualGuests().stream()
-		// .filter(s -> s.getId() == 8501951L)
-		// .forEach(s -> s.asService(client).powerOn());
-
-		// accountService.withMask().hardware().id();
-		// accountService.withMask().hardware().hostname();
-		// accountService.withMask().hardware().fullyQualifiedDomainName();
-
-		// BareMetal
-		// for (Hardware hardware : accountService.getObject().getHardware()) {
-		// // ID
-		// System.out.println(hardware.getId());
-		// // ホスト名
-		// System.out.println(hardware.getHostname());
-		// // ホスト名
-		// System.out.println(hardware.getFullyQualifiedDomainName());
-		// Hardware.Service service = hardware.asService(client);
-		// // 停止
-		// // service.powerOff();
-		// // 起�?
-		// // service.powerOn();
-		// // ス�?ータス(on/off)
-		// System.out.println(service.getServerPowerState());
-		// }
 
 	}
 }

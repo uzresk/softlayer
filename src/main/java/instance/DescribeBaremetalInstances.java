@@ -18,19 +18,6 @@ public class DescribeBaremetalInstances {
 		} else {
 			describeBaremetalInstances();
 		}
-
-		ApiClient client = SoftLayerClientProvider.createApiClient();
-		Account.Service accountService = Account.service(client);
-
-		// インスタンスの�?報をまとめて表示します�??
-		accountService
-				.getObject()
-				.getHardware()
-				.stream()
-				.map(s -> "[" + s.getId() + "]["
-						+ s.getFullyQualifiedDomainName() + "]["
-						+ s.asService(client).getServerPowerState() + "]")
-				.forEach(System.out::println);
 	}
 
 	private static void describeBaremetalInstances() {
@@ -42,7 +29,6 @@ public class DescribeBaremetalInstances {
 		accountService.withMask().hardware().hostname();
 		accountService.withMask().hardware().fullyQualifiedDomainName();
 
-		// インスタンスの�?報をまとめて表示します�??
 		accountService
 				.getObject()
 				.getHardware()
@@ -62,7 +48,6 @@ public class DescribeBaremetalInstances {
 		accountService.withMask().hardware().hostname();
 		accountService.withMask().hardware().fullyQualifiedDomainName();
 
-		// インスタンスの�?報を指定して表示します�??
 		accountService
 				.getObject()
 				.getHardware()
