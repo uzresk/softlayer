@@ -1,4 +1,4 @@
-package simple;
+package instance;
 
 import provider.SoftLayerClientProvider;
 
