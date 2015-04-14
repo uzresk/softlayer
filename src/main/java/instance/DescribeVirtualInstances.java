@@ -1,5 +1,8 @@
 package instance;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import provider.SoftLayerClientProvider;
 
 import com.softlayer.api.ApiClient;
@@ -24,12 +27,11 @@ public class DescribeVirtualInstances {
 
 		Account.Service accountService = Account.service(client);
 
-		// インスタンスの�?報をまとめて表示します�??
 		accountService
 				.getVirtualGuests()
 				.stream()
-				.map(s -> "[" + s.getId() + "][" + s.getFullyQualifiedDomainName() + "]["
-						+ s.asService(client).getPowerState().getName() + "]")
+				.map(s -> ToStringBuilder.reflectionToString(s,
+						ToStringStyle.MULTI_LINE_STYLE))
 				.forEach(System.out::println);
 	}
 
@@ -40,7 +42,6 @@ public class DescribeVirtualInstances {
 
 		System.out.println("[ID][Domain][Status]");
 
-		// インスタンスの�?報を指定して表示します�??
 		accountService
 				.getVirtualGuests()
 				.stream()
